@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const budget = new mongoose.Schema({
+const budgetSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -28,5 +28,5 @@ const budget = new mongoose.Schema({
 budgetSchema.index({ userId: 1, categoryId: 1, month: 1, year: 1 }, { unique: true });
 
 
-const Budget = mongoose.model("Budget", budget);
+const Budget = mongoose.model("Budget", budgetSchema);
 module.exports = Budget;

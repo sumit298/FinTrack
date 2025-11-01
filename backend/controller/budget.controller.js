@@ -1,5 +1,6 @@
-const Budget = require("../models/budget");
-const Category = require("../models/category");
+const Budget = require("../models/budget.model");
+const Category = require("../models/category.model");
+const Transaction = require("../models/transaction.model");
 
 const BudgetController = {
   getBudget: async (req, res) => {
@@ -73,19 +74,19 @@ const BudgetController = {
       if (categoryId) {
         const category = await Category.findOne({
           _id: categoryId,
-          userId: req.userId,
+          userId: req.user.userId,
         });
 
         if (!category) {
-          res.status(404).json({
+          return res.status(404).json({
             message: "Category not found",
             success: false,
           });
         }
 
-        if (category.type === "expense") {
+        if (category.type === "income") {
           return res.status(400).json({
-            message: "Expense category cannot be used for budget",
+            message: "Income category cannot be used for budget",
             success: false,
           });
         }
@@ -95,7 +96,7 @@ const BudgetController = {
         categoryId,
         month: parseInt(month),
         year: parseInt(year),
-        userId: req.user.id,
+        userId: req.user.userId,
       });
 
       if (existingBudget) {
@@ -109,7 +110,7 @@ const BudgetController = {
         amount: parseFloat(amount),
         month: parseInt(month),
         year: parseInt(year),
-        userId: req.userId,
+        userId: req.user.userId,
       });
 
       await budget.save();
@@ -120,11 +121,11 @@ const BudgetController = {
         data: budget,
       });
     } catch (error) {
-        res.status(500).json({
+      res.status(500).json({
         message: "Error creating budget",
         success: false,
         error: error.message,
-      })
+      });
     }
   },
 
@@ -137,7 +138,7 @@ const BudgetController = {
       const budgets = await Budget.find({
         userId: req.user.userId,
         month: currentMonth,
-        year: currentYear
+        year: currentYear,
       }).populate("categoryId", "name type color");
 
       res.json({
@@ -145,26 +146,81 @@ const BudgetController = {
         message: "Current month budgets fetched successfully",
         data: budgets,
         currentMonth,
-        currentYear
+        currentYear,
       });
     } catch (error) {
       res.status(500).json({
         message: "Error fetching current month budgets",
         success: false,
-        error: error.message
+        error: error.message,
       });
     }
   },
 
   getBudgetComparison: async (req, res) => {
     try {
-        
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1;
+      const currentYear = currentDate.getFullYear();
+
+      const budgets = await Budget.find({
+        userId: req.user.userId,
+        month: currentMonth,
+        year: currentYear,
+      }).populate("categoryId", "name type color");
+
+      const transactions = await Transaction.aggregate([
+        {
+          $match: {
+            type: "expense",
+            userId: req.user.userId,
+            date: {
+              $gte: new Date(currentYear, currentMonth - 1, 1),
+              $lte: new Date(currentYear, currentMonth, 0),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: "$categoryId",
+            totalSpent: { $sum: "$amount" },
+          },
+        },
+      ]);
+
+      const results = budgets.map((budget) => {
+        const spent =
+          transactions.find(
+            (t) => t._id.toString() === budget.categoryId._id.toString()
+          )?.totalSpent || 0;
+
+        const difference = budget.amount - spent;
+
+        return {
+          categoryId: budget.categoryId._id,
+          categoryName: budget.categoryId.name,
+
+          budgetAmount: budget.amount,
+          spentAmount: spent,
+          difference: difference,
+          percentage: (spent / budget.amount) * 100,
+        };
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: "Budget comparison fetched successfully",
+        data: results,
+      });
     } catch (error) {
-        
+      console.error("Error fetching budget comparison", error);
+      res.status(500).json({
+        message: "Error fetching budget comparison",
+        success: false,
+        error: error.message,
+      });
     }
-  }
+  },
 };
-
-
 
 module.exports = BudgetController;

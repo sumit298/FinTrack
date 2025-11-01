@@ -40,8 +40,9 @@ async function authenticate(req, res, next) {
       req.userId = decoded.userId;
 
       req.user = {
+        userId: decoded.userId,
         id: decoded.userId,
-        username: decoded.username,
+        username: user.username,
         email: user.email,
       };
 

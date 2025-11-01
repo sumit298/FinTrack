@@ -105,13 +105,14 @@ const TransactionController = {
       const transaction = new Transaction({
         type,
         amount: parseFloat(amount),
-        userId: req.user.id,
+        userId: req.user.userId,
         description: description || "",
         date: date ? new Date(date) : new Date(),
         categoryId: categoryId || null,
       });
 
-      await transaction.populate("cateogoryId", "name type color");
+      await transaction.save();
+      await transaction.populate("categoryId", "name type color");
 
       res.status(200).json({
         success: true,
@@ -129,7 +130,7 @@ const TransactionController = {
 
   getTransactionById: async (req, res) => {
     try {
-      const transaction = Transaction.findOne({
+      const transaction = await Transaction.findOne({
         _id: req.params.id,
         userId: req.user.userId,
       }).populate("categoryId", "name color type");
