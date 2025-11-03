@@ -1,6 +1,9 @@
 const { validationResult } = require("express-validator");
 const User = require("../models/user.model");
-const { createToken } = require("../middleware/auth.middleware");
+const {
+  createToken,
+  refreshToken,
+} = require("../middleware/auth.middleware");
 
 const AuthController = {
   register: async (req, res) => {
@@ -29,7 +32,7 @@ const AuthController = {
       // check if user already exists
 
       await user.save();
-      const token = createToken(user._id);
+      const token = createToken(user);
 
       return res.status(201).json({
         success: true,
@@ -49,7 +52,7 @@ const AuthController = {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        res
+        return res
           .status(400)
           .json({ message: "validation failed for login", success: false });
       }
@@ -72,7 +75,7 @@ const AuthController = {
           .json({ message: "Invalid credentials", success: false });
       }
 
-      const token = createToken(user._id);
+      const token = createToken(user);
       res.json({
         success: true,
         message: "User logged in successfully",
@@ -80,9 +83,60 @@ const AuthController = {
         user: user.toJSON(),
       });
     } catch (error) {
+      console.error("Login error:", error);
       res
         .status(500)
         .json({ message: "Server error during login", success: false });
+    }
+  },
+
+  verifyToken: async (req, res) => {
+    console.log("req.user", req.user);
+    try {
+      // If middleware passes, token is valid
+      const user = await User.findById(req.userId).select("-password");
+      console.log("user", user);
+
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Token is valid",
+        user: user.toJSON(),
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Token verification failed",
+      });
+    }
+  },
+
+  refreshToken: async (req, res) => {
+    try {
+      const { token } = req.body;
+
+      if (!token) {
+        return res.status(400).json({ message: "Token not provided" });
+      }
+
+      const newToken = await refreshToken(token);
+      return res.status(200).json({
+        success: true,
+        message: "Token refreshed successfully",
+        token: newToken,
+      });
+    } catch (error) {
+      return res.status(401).json({
+        success: false,
+        message: "Token refresh failed",
+        error: error.message,
+      });
     }
   },
 };

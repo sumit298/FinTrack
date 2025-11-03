@@ -1,16 +1,61 @@
+"use client"
+import ProtectedRoute from "@/components/protectedRoute";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, Receipt } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/lib/context/AuthContext";
+import { useState } from "react";
 
 const Dashboard = ()=> {
+    const { user, apiCall } = useAuth();
+    const [apiResult, setApiResult] = useState("");
+    const [loading, setLoading] = useState(false);  
+
+     const testApiCall = async () => {
+        try {
+            setLoading(true);
+            console.log("Making API call...");
+            
+            const response = await apiCall("http://localhost:5001/v1/api/transactions");
+            const data = await response.json();
+            
+            console.log("API call successful:", data);
+            setApiResult(JSON.stringify(data, null, 2));
+        } catch (error: any) {
+            console.error("API call failed:", error);
+            setApiResult(`Error: ${error.message}`);
+        } finally {
+            setLoading(false);
+        }
+    };
     return (
+        <ProtectedRoute>
         <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground mt-1">Your financial overview at a glance</p>
         </div>
+
+        <p className="mb-4">Welcome, {user?.username}!</p>
+            
+            <div className="mb-4">
+                <button
+                    onClick={testApiCall}
+                    disabled={loading}
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+                >
+                    {loading ? "Testing..." : "Test API Call (Refresh Token)"}
+                </button>
+            </div>
+
+            {apiResult && (
+                <div className="bg-gray-100 p-4 rounded">
+                    <h3 className="font-bold mb-2">API Result:</h3>
+                    <pre className="text-sm overflow-auto">{apiResult}</pre>
+                </div>
+            )}
         <div className="flex gap-3">
           <Button asChild variant="outline" className="gap-2">
             <Link href="/transactions">
@@ -154,6 +199,7 @@ const Dashboard = ()=> {
         </CardContent>
       </Card>
     </div>
+    </ProtectedRoute>
   );
     
     

@@ -1,10 +1,15 @@
-const Transaction = ()=> {
+import ProtectedRoute from "@/components/protectedRoute";
+
+const Transaction = () => {
     return (
-        <div>
-            <h1>Transaction</h1>
-        </div>
-    
-    
+        <ProtectedRoute>
+
+            <div>
+                <h1>Transaction</h1>
+            </div>
+
+        </ProtectedRoute>
+
     )
 }
 

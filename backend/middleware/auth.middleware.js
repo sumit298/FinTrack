@@ -70,7 +70,7 @@ function createToken(user) {
   };
 
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "15m", // 15 minutes for production
   });
 
   return token;
@@ -79,8 +79,15 @@ function createToken(user) {
 async function refreshToken(token) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET, {
-        ignoreExpiration: true
+      ignoreExpiration: true,
     });
+
+    const now = Math.floor(Date.now() / 1000);
+    const gracePeriod = 24 * 60 * 60;
+
+    if (now - decoded.exp > gracePeriod) {
+      throw new Error("Token expired");
+    }
 
     const user = await User.findById(decoded.userId);
 

@@ -15,6 +15,7 @@ import {
     SidebarFooter,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/lib/context/AuthContext';
 
 const navItems = [
     { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
@@ -26,8 +27,10 @@ export function AppSidebar() {
     const { state } = useSidebar();
     const router = useRouter();
     const pathname = usePathname();
+    const { logout } = useAuth();   
 
     const handleLogout = () => {
+        logout()
         router.push('/login');
     };
 
@@ -63,6 +66,7 @@ export function AppSidebar() {
 
             <SidebarFooter className="border-t border-border p-4">
                 <div className="flex items-center gap-3">
+                    <p>Logout </p>
                     <Button
                         variant="ghost"
                         size="icon"
