@@ -5,30 +5,38 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { DollarSign, Receipt } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/context/AuthContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Dashboard = ()=> {
     const { user, apiCall } = useAuth();
     const [apiResult, setApiResult] = useState("");
-    const [loading, setLoading] = useState(false);  
+    const [loading, setLoading] = useState(false);
+    const [transactions, setTransactions] = useState([]);
+    const [transactionsLoading, setTransactionsLoading] = useState(true);  
 
-     const testApiCall = async () => {
+    const fetchTransactions = async () => {
         try {
-            setLoading(true);
-            console.log("Making API call...");
-            
+            setTransactionsLoading(true);
             const response = await apiCall("http://localhost:5001/v1/api/transactions");
             const data = await response.json();
             
-            console.log("API call successful:", data);
-            setApiResult(JSON.stringify(data, null, 2));
+            if (data.success) {
+                setTransactions(data.data.slice(0, 5)); // Show only recent 5
+            }
         } catch (error: any) {
-            console.error("API call failed:", error);
-            setApiResult(`Error: ${error.message}`);
+            console.error("Failed to fetch transactions:", error);
         } finally {
-            setLoading(false);
+            setTransactionsLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (user) {
+            fetchTransactions();
+        }
+    }, [user]);
+
+    
     return (
         <ProtectedRoute>
         <div className="space-y-6">
@@ -40,15 +48,7 @@ const Dashboard = ()=> {
 
         <p className="mb-4">Welcome, {user?.username}!</p>
             
-            <div className="mb-4">
-                <button
-                    onClick={testApiCall}
-                    disabled={loading}
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
-                >
-                    {loading ? "Testing..." : "Test API Call (Refresh Token)"}
-                </button>
-            </div>
+           
 
             {apiResult && (
                 <div className="bg-gray-100 p-4 rounded">
@@ -167,34 +167,44 @@ const Dashboard = ()=> {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {/* {mockTransactions.slice(0, 5).map((transaction) => (
-              <div
-                key={transaction.id}
-                className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${transaction.type === 'income' ? 'bg-green-50' : 'bg-red-50'}`}>
-                    {transaction.type === 'income' ? (
-                      <ArrowUpRight className="h-4 w-4 text-green-600" />
-                    ) : (
-                      <ArrowDownRight className="h-4 w-4 text-red-600" />
-                    )}
+            {transactionsLoading ? (
+              <div className="text-center py-4">Loading transactions...</div>
+            ) : transactions.length > 0 ? (
+              transactions.map((transaction: any) => (
+                <div
+                  key={transaction._id}
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-lg ${
+                      transaction.categoryId.type === 'income' ? 'bg-green-50' : 'bg-red-50'
+                    }`}>
+                      <Receipt className={`h-4 w-4 ${
+                        transaction.categoryId.type === 'income' ? 'text-green-600' : 'text-red-600'
+                      }`} />
+                    </div>
+                    <div>
+                      <p className="font-medium">{transaction.description}</p>
+                      <p className="text-sm text-muted-foreground">{transaction.categoryId.name}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium">{transaction.description}</p>
-                    <p className="text-sm text-muted-foreground">{transaction.category_name}</p>
+                  <div className="text-right">
+                    <p className={`font-semibold ${
+                      transaction.categoryId.type === 'income' ? 'text-green-600' : 'text-red-600'
+                    }`}>
+                      {transaction.categoryId.type === 'income' ? '+' : '-'}${transaction.amount.toLocaleString()}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {new Date(transaction.date).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className={`font-semibold ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
-                    {transaction.type === 'income' ? '+' : '-'}${transaction.amount.toLocaleString()}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {new Date(transaction.date).toLocaleDateString()}
-                  </p>
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-4 text-muted-foreground">
+                No transactions found
               </div>
-            ))} */}
+            )}
           </div>
         </CardContent>
       </Card>

@@ -1,5 +1,5 @@
 "use client"
-import { LayoutDashboard, Receipt, Wallet, LogOut } from 'lucide-react';
+import { LayoutDashboard, Receipt, Wallet, LogOut, LayoutGrid } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import {
@@ -21,13 +21,14 @@ const navItems = [
     { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
     { title: 'Transactions', url: '/transactions', icon: Receipt },
     { title: 'Budget', url: '/budgets', icon: Wallet },
+    { title: "Category", url: "/categories", icon: LayoutGrid}  
 ];
 
 export function AppSidebar() {
     const { state } = useSidebar();
     const router = useRouter();
     const pathname = usePathname();
-    const { logout } = useAuth();   
+    const { logout, user } = useAuth();   
 
     const handleLogout = () => {
         logout()
@@ -40,6 +41,7 @@ export function AppSidebar() {
                 <SidebarGroup>
                     <SidebarGroupLabel className="text-xs uppercase tracking-wider px-4 py-3">
                         {state === 'expanded' ? 'Budget Tracker' : 'BT'}
+                        
                     </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
@@ -54,6 +56,7 @@ export function AppSidebar() {
                                                 }`}
                                         >
                                             <item.icon className="h-5 w-5" />
+                                            
                                             {state === 'expanded' && <span>{item.title}</span>}
                                         </Link>
                                     </SidebarMenuButton>
@@ -65,8 +68,18 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter className="border-t border-border p-4">
-                <div className="flex items-center gap-3">
-                    <p>Logout </p>
+               
+                <div className="flex items-center gap-3 justify-between">
+                    {user && (
+                        <p className="text-sm text-muted-foreground">
+                            <span className="font-medium">{user.username}</span>
+                            <br />
+                            <span className="text-xs text-muted-foreground">
+                                {user.email}
+                            </span>
+                        </p>
+                    )}
+                   
                     <Button
                         variant="ghost"
                         size="icon"

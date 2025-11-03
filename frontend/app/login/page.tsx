@@ -78,6 +78,7 @@ const Login = () => {
                 headers: {
                     "Content-Type": "application/json",
                 },
+               
                 body: JSON.stringify(loginData),
             });
 
@@ -168,7 +169,7 @@ const Login = () => {
                         <div className="text-center mt-2">
                             <p className="text-sm mt-2">
                                 Don't have an account?{" "}
-                                <a href="/register" className="text-blue-500">
+                                <a href="/register" className="text-gray-500 font-semibold">
                                     Sign Up
                                 </a>
                             </p>
