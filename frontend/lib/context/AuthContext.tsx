@@ -38,8 +38,12 @@ export const AuthProvider = ({ children }: any) => {
         })
 
         if (response.status === 401) {
-            try {
-                const newToken = await refreshAccessToken();
+            const newToken = await refreshAccessToken();
+            if (newToken) {
+                // Update user with new token
+                setUser(prev => prev ? { ...prev, token: newToken } : null);
+                
+                // Retry the original request with new token
                 return fetch(url, {
                     ...options,
                     headers: {
@@ -47,9 +51,9 @@ export const AuthProvider = ({ children }: any) => {
                         Authorization: `Bearer ${newToken}`
                     }
                 })
-            } catch (error) {
+            } else {
                 logout();
-                throw error;
+                throw new Error('Authentication failed');
             }
         }
         return response;
@@ -82,16 +86,19 @@ export const AuthProvider = ({ children }: any) => {
 
             if (data.success) {
                 setUser({ token, ...data.user });
-            } else {
-                try {
-                    const newToken = await refreshAccessToken();
-                    if (newToken) {
-                        await verifyToken(newToken);
-                        return;
-                    }
-                } catch (refreshError) {
-                    console.error("Refresh Error", refreshError)
+            } else if (response.status === 401) {
+                // Token expired, try to refresh
+                const newToken = await refreshAccessToken();
+                if (newToken) {
+                    // Verify the new token
+                    await verifyToken(newToken);
+                    return;
+                } else {
+                    // Refresh failed, logout
+                    Cookies.remove("token");
+                    setUser(null);
                 }
+            } else {
                 Cookies.remove("token");
                 setUser(null);
             }
@@ -106,6 +113,7 @@ export const AuthProvider = ({ children }: any) => {
 
     const refreshAccessToken = async () => {
         const token = Cookies.get('token');
+        if (!token) return null;
 
         try {
             const response = await fetch("http://localhost:5001/v1/api/refresh-token", {
@@ -118,16 +126,14 @@ export const AuthProvider = ({ children }: any) => {
 
             const data = await response.json();
 
-            if (data.success) {
-                Cookies.set("token", data.token, { expires: 7 }); // 7 days
+            if (data.success && data.token) {
+                Cookies.set("token", data.token, { expires: 7 });
                 return data.token;
             }
-            else {
-                throw new Error(data.message || "Refresh failed");
-            }
+            return null;
         } catch (error) {
-            logout();
-            throw error;
+            console.error('Token refresh failed:', error);
+            return null;
         }
     }
 
