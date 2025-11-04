@@ -4,6 +4,18 @@ A full-stack budget tracking application with **Node.js/Express + Next.js/React*
 
 ## 🚀 Quick Start
 
+### Docker (Recommended)
+```bash
+# Start all services
+docker-compose --env-file .env.docker up --build
+
+# Access:
+# Frontend: http://localhost:3000
+# Backend: http://localhost:5001
+# MongoDB: localhost:27017
+```
+
+### Manual Setup
 ```bash
 # Backend
 cd backend && npm install && npm run dev
@@ -78,11 +90,24 @@ NEXT_PUBLIC_API_URL=http://localhost:5001
 - `GET/POST/PUT/DELETE /v1/api/budget` - Budget operations
 - `GET /v1/api/budget/comparison` - Budget vs actual data
 
-## 🚀 Deployment
+## 🚀 Deployment Options
 
-**Frontend**: Deployed on Vercel  
-**Backend**: Deployed on Railway  
+### 1. Docker + Cloud DB
+```bash
+# Use MongoDB Atlas for production
+docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d
+```
+
+### 2. Individual Services
+**Frontend**: Vercel  
+**Backend**: Railway/Render  
 **Database**: MongoDB Atlas
+
+### 3. Full Docker Stack
+```bash
+# Local development with MongoDB container
+docker-compose --env-file .env.docker up -d
+```
 
 ## 🔒 Security
 
