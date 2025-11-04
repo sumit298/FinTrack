@@ -203,8 +203,8 @@ Authorization: Bearer your-jwt-token
 
     <div class="section">
         <h2>🌐 Links</h2>
-        <p><strong>Frontend Application:</strong> <a href="https://your-app.vercel.app" target="_blank">https://your-app.vercel.app</a></p>
-        <p><strong>GitHub Repository:</strong> <a href="https://github.com/yourusername/FinTrack" target="_blank">https://github.com/yourusername/FinTrack</a></p>
+        <p><strong>Frontend Application:</strong> <a href="https://fin-track-lk2ukjdru-sumit298s-projects.vercel.app/login" target="_blank">https://fin-track-lk2ukjdru-sumit298s-projects.vercel.app/login</a></p>
+        <p><strong>GitHub Repository:</strong> <a href="https://github.com/sumit298/FinTrack" target="_blank">https://github.com/sumit298/FinTrack</a></p>
     </div>
 
 </body>
