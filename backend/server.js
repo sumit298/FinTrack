@@ -9,6 +9,7 @@ const TransactionRouter = require("./routes/transaction.routes");
 const BudgetRouter = require("./routes/budget.routes");
 const AuthRouter = require("./routes/auth.routes");
 const CategoryRouter = require("./routes/category.routes");
+const DocsRouter = require("./routes/docs.routes");
 
 app.use(express.json());
 app.use(cors());
@@ -24,6 +25,7 @@ app.use("/v1/api", TransactionRouter);
 app.use("/v1/api", BudgetRouter);
 app.use("/v1/api", AuthRouter);
 app.use("/v1/api", CategoryRouter);
+app.use("/api-docs", DocsRouter);
 
 // health check
 app.get("/health", (req, res) => {
