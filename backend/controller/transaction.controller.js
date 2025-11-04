@@ -45,7 +45,7 @@ const TransactionController = {
         .limit(perPage)
         .populate("categoryId");
 
-      res.json({
+      res.status(200).json({
         message: "Transactions fetched successfully",
         success: true,
         data: transactions,
@@ -67,6 +67,7 @@ const TransactionController = {
 
   createTransaction: async (req, res) => {
     try {
+      console.log(req.body)
       const { type, amount, categoryId, date, description } = req.body;
 
       if (!amount || !categoryId || !type) {
@@ -120,7 +121,7 @@ const TransactionController = {
         data: transaction,
       });
     } catch (error) {
-      res.json({
+      res.status(500).json({
         success: false,
         message: "Error creating transaction",
         error: error.message,

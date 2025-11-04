@@ -13,7 +13,7 @@ const CategoryRouter = require("./routes/category.routes");
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
-
+app.use(express.json());
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("DB connected"))

@@ -4,6 +4,6 @@ const express = require("express");
 
 const AnalyticsRouter = express.Router();
 
-AnalyticsRouter.get("/summary", authenticate, AnalyticsController.getSummary);
+AnalyticsRouter.get("/analytics/summary", authenticate, AnalyticsController.getSummary);
 
 module.exports = AnalyticsRouter;

@@ -6,11 +6,9 @@ const BudgetRouter = express.Router();
 
 BudgetRouter.post("/budget", authenticate, BudgetController.createBudget);
 BudgetRouter.get("/budget", authenticate, BudgetController.getBudget);
-BudgetRouter.get(
-  "/getCurrentMonthBudget",
-  authenticate,
-  BudgetController.getCurrentMonthBudget
-);
-BudgetRouter.get("/getBudgetByMonth", authenticate, BudgetController.getBudgetComparison);
+BudgetRouter.put("/budget/:id", authenticate, BudgetController.updateBudget);
+BudgetRouter.delete("/budget/:id", authenticate, BudgetController.deleteBudget);
+BudgetRouter.get("/budget/current-month", authenticate, BudgetController.getCurrentMonthBudget);
+BudgetRouter.get("/budget/comparison", authenticate, BudgetController.getBudgetComparison);
 
 module.exports = BudgetRouter;

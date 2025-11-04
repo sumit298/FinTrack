@@ -109,6 +109,77 @@ const CategoryController = {
       });
     }
   },
+  updateCategory: async (req, res) => {
+    try {
+      const { name, type } = req.body;
+
+      if (!name || !type) {
+        return res.status(400).json({
+          message: "Please provide all fields",
+          success: false,
+        });
+      }
+
+      if (!["income", "expense"].includes(type)) {
+        return res.status(400).json({
+          message: "Invalid type",
+          success: false,
+        });
+      }
+
+      const category = await Category.findOneAndUpdate(
+        { _id: req.params.id, userId: req.user.userId },
+        { name, type },
+        { new: true }
+      );
+
+      if (!category) {
+        return res.status(404).json({
+          message: "Category not found",
+          success: false,
+        });
+      }
+
+      return res.json({
+        message: "Category updated successfully",
+        success: true,
+        data: category,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "Error updating category",
+        success: false,
+        error: error.message,
+      });
+    }
+  },
+  deleteCategory: async (req, res) => {
+    try {
+      const category = await Category.findOneAndDelete({
+        _id: req.params.id,
+        userId: req.user.userId,
+      });
+
+      if (!category) {
+        return res.status(404).json({
+          message: "Category not found",
+          success: false,
+        });
+      }
+
+      return res.json({
+        message: "Category deleted successfully",
+        success: true,
+        data: category,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "Error deleting category",
+        success: false,
+        error: error.message,
+      });
+    }
+  },
 };
 
 module.exports = CategoryController;

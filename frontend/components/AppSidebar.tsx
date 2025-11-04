@@ -1,5 +1,5 @@
 "use client"
-import { LayoutDashboard, Receipt, Wallet, LogOut, LayoutGrid } from 'lucide-react';
+import { LayoutDashboard, Receipt, Wallet, LogOut, LayoutList } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import {
@@ -19,9 +19,9 @@ import { useAuth } from '@/lib/context/AuthContext';
 
 const navItems = [
     { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
+    { title: "Category", url: "/categories", icon: LayoutList}, 
     { title: 'Transactions', url: '/transactions', icon: Receipt },
     { title: 'Budget', url: '/budgets', icon: Wallet },
-    { title: "Category", url: "/categories", icon: LayoutGrid}  
 ];
 
 export function AppSidebar() {
@@ -84,7 +84,7 @@ export function AppSidebar() {
                         variant="ghost"
                         size="icon"
                         onClick={handleLogout}
-                        className="shrink-0"
+                        className="shrink-0 cursor-pointer"
                         title="Logout"
                     >
                         <LogOut className="h-4 w-4" />
