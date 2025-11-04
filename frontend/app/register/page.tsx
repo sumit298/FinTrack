@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/context/AuthContext";
+import { API_URL } from "@/lib/config";
 
 
 const Register = () => {
@@ -103,7 +104,7 @@ const Register = () => {
       setLoading(true);
       const { confirmPassword, ...dataToSend } = registerData;
 
-      const result = await fetch("http://localhost:5001/v1/api/register", {
+      const result = await fetch(`${API_URL}/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

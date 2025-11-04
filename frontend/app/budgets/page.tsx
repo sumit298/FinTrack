@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Plus, TrendingUp, TrendingDown, AlertCircle, Edit, Trash2 } from 'lucide-react';
 import ProtectedRoute from '@/components/protectedRoute';
 import { useAuth } from '@/lib/context/AuthContext';
+import { API_URL } from '@/lib/config';
 import toast from 'react-hot-toast';
 import BudgetChart from '@/components/charts/BudgetChart';
 import PieChart from '@/components/charts/PieChart';
@@ -95,7 +96,7 @@ export default function BudgetPage() {
 
   const fetchBudgets = async () => {
     try {
-      const response = await apiCall("http://localhost:5001/v1/api/budget");
+      const response = await apiCall(`${API_URL}/budget`);
       const data = await response.json();
       if (data.success) {
         setBudgets(data.data);
@@ -107,7 +108,7 @@ export default function BudgetPage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await apiCall("http://localhost:5001/v1/api/category");
+      const response = await apiCall(`${API_URL}/category`);
       const data = await response.json();
       if (data.success) {
         setCategories(data.data.filter((cat: Category) => cat.type === 'expense'));
@@ -119,7 +120,7 @@ export default function BudgetPage() {
 
   const fetchTransactions = async () => {
     try {
-      const response = await apiCall("http://localhost:5001/v1/api/transactions");
+      const response = await apiCall(`${API_URL}/transactions`);
       const data = await response.json();
       if (data.success) {
         setTransactions(data.data.filter((t: Transaction) => t.categoryId?.type === 'expense'));
@@ -131,7 +132,7 @@ export default function BudgetPage() {
 
   const fetchCurrentMonthBudgets = async () => {
     try {
-      const response = await apiCall("http://localhost:5001/v1/api/budget/current-month");
+      const response = await apiCall(`${API_URL}/budget/current-month`);
       const data = await response.json();
       if (data.success) {
         setCurrentMonthBudgets(data.data);
@@ -143,7 +144,7 @@ export default function BudgetPage() {
 
   const fetchBudgetComparison = async () => {
     try {
-      const response = await apiCall("http://localhost:5001/v1/api/budget/comparison");
+      const response = await apiCall(`${API_URL}/budget/comparison`);
       const data = await response.json();
       if (data.success) {
         setBudgetComparison(data.data);
@@ -158,8 +159,8 @@ export default function BudgetPage() {
     
     try {
       const url = editingBudget 
-        ? `http://localhost:5001/v1/api/budget/${editingBudget._id}`
-        : "http://localhost:5001/v1/api/budget";
+        ? `${API_URL}/budget/${editingBudget._id}`
+        : `${API_URL}/budget`;
       
       const method = editingBudget ? "PUT" : "POST";
       
@@ -207,7 +208,7 @@ export default function BudgetPage() {
     if (!confirm("Are you sure you want to delete this budget?")) return;
     
     try {
-      const response = await apiCall(`http://localhost:5001/v1/api/budget/${id}`, {
+      const response = await apiCall(`${API_URL}/budget/${id}`, {
         method: "DELETE"
       });
 

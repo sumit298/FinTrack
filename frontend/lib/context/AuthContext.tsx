@@ -2,6 +2,7 @@
 import { createContext, useContext } from "react";
 import Cookies from "js-cookie";
 import { useState, useEffect } from "react";
+import { API_URL } from "../config";
 
 
 interface User {
@@ -74,7 +75,7 @@ export const AuthProvider = ({ children }: any) => {
     const verifyToken = async (token: string) => {
         try {
             const response = await fetch(
-                "http://localhost:5001/v1/api/verify-token",
+                `${API_URL}/verify-token`,
                 {
                     method: "GET",
                     headers: {
@@ -116,7 +117,7 @@ export const AuthProvider = ({ children }: any) => {
         if (!token) return null;
 
         try {
-            const response = await fetch("http://localhost:5001/v1/api/refresh-token", {
+            const response = await fetch(`${API_URL}/refresh-token`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

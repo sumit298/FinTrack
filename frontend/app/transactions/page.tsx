@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, Search, Filter, Edit, Trash2, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import ProtectedRoute from "@/components/protectedRoute";
 import { useAuth } from "@/lib/context/AuthContext";
+import { API_URL } from "@/lib/config";
 import toast from "react-hot-toast";
 
 interface Transaction {
@@ -64,7 +65,7 @@ export default function TransactionsPage() {
 
     const fetchTransactions = async () => {
         try {
-            const response = await apiCall("http://localhost:5001/v1/api/transactions");
+            const response = await apiCall(`${API_URL}/transactions`);
             const data = await response.json();
             if (data.success) {
                 setTransactions(data.data);
@@ -79,7 +80,7 @@ export default function TransactionsPage() {
 
     const fetchCategories = async () => {
         try {
-            const response = await apiCall("http://localhost:5001/v1/api/category");
+            const response = await apiCall(`${API_URL}/category`);
             const data = await response.json();
             if (data.success) {
                 setCategories(data.data);
@@ -94,8 +95,8 @@ export default function TransactionsPage() {
 
         try {
             const url = editingTransaction
-                ? `http://localhost:5001/v1/api/transactions/${editingTransaction._id}`
-                : "http://localhost:5001/v1/api/transactions";
+                ? `${API_URL}/transactions/${editingTransaction._id}`
+                : `${API_URL}/transactions`;
 
             const method = editingTransaction ? "PUT" : "POST";
 
@@ -143,7 +144,7 @@ export default function TransactionsPage() {
         if (!confirm("Are you sure you want to delete this transaction?")) return;
 
         try {
-            const response = await apiCall(`http://localhost:5001/v1/api/transactions/${id}`, {
+            const response = await apiCall(`${API_URL}/transactions/${id}`, {
                 method: "DELETE"
             });
 

@@ -4,6 +4,7 @@ import PublicRoute from "@/components/publicRoute";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAuth } from "@/lib/context/AuthContext";
+import { API_URL } from "@/lib/config";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 
@@ -73,7 +74,7 @@ const Login = () => {
 
         try {
             setLoading(true);
-            const result = await fetch("http://localhost:5001/v1/api/login", {
+            const result = await fetch(`${API_URL}/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

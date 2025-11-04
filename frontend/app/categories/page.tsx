@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Edit, Trash2, Tag } from "lucide-react";
 import ProtectedRoute from "@/components/protectedRoute";
 import { useAuth } from "@/lib/context/AuthContext";
+import { API_URL } from "@/lib/config";
 import toast from "react-hot-toast";
 
 interface Category {
@@ -38,7 +39,7 @@ export default function CategoriesPage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await apiCall("http://localhost:5001/v1/api/category", {
+      const response = await apiCall(`${API_URL}/category`, {
         headers: {
             "Content-type": "application/json"
         }
@@ -59,8 +60,8 @@ export default function CategoriesPage() {
     
     try {
       const url = editingCategory 
-        ? `http://localhost:5001/v1/api/category/${editingCategory._id}`
-        : "http://localhost:5001/v1/api/category";
+        ? `${API_URL}/category/${editingCategory._id}`
+        : `${API_URL}/category`;
       
       const method = editingCategory ? "PUT" : "POST";
       

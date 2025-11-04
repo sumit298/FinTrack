@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { TrendingUp, TrendingDown, DollarSign, CreditCard } from 'lucide-react';
 import ProtectedRoute from '@/components/protectedRoute';
 import { useAuth } from '@/lib/context/AuthContext';
+import { API_URL } from '@/lib/config';
 import BudgetChart from '@/components/charts/BudgetChart';
 import PieChart from '@/components/charts/PieChart';
 import LineChart from '@/components/charts/LineChart';
@@ -72,7 +73,7 @@ export default function DashboardPage() {
 
   const fetchTransactions = async () => {
     try {
-      const response = await apiCall("http://localhost:5001/v1/api/transactions");
+      const response = await apiCall(`${API_URL}/transactions`);
       const data = await response.json();
       if (data.success) {
         setTransactions(data.data);
@@ -84,7 +85,7 @@ export default function DashboardPage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await apiCall("http://localhost:5001/v1/api/category");
+      const response = await apiCall(`${API_URL}/category`);
       const data = await response.json();
       if (data.success) {
         setCategories(data.data);
@@ -96,7 +97,7 @@ export default function DashboardPage() {
 
   const fetchBudgetComparison = async () => {
     try {
-      const response = await apiCall(`http://localhost:5001/v1/api/budget/comparison?month=${selectedMonth}&year=${selectedYear}`);
+      const response = await apiCall(`${API_URL}/budget/comparison?month=${selectedMonth}&year=${selectedYear}`);
       const data = await response.json();
       if (data.success) {
         setBudgetComparison(data.data);
@@ -108,7 +109,7 @@ export default function DashboardPage() {
 
   const fetchAnalyticsSummary = async () => {
     try {
-      const response = await apiCall(`http://localhost:5001/v1/api/analytics/summary?month=${selectedMonth}&year=${selectedYear}`);
+      const response = await apiCall(`${API_URL}/analytics/summary?month=${selectedMonth}&year=${selectedYear}`);
       const data = await response.json();
       console.log("Analytics response:", data);
       if (data.success) {
