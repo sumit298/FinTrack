@@ -4,3 +4,5 @@ test-transaction.js
 .env
 .env.prod
 .env.docker
+.dockerignore
+docker-compose.prod.yml
