@@ -72,10 +72,10 @@ export default function LineChart({ data, title }: LineChartProps) {
     // Axes
     g.append("g")
       .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%m/%d")));
+      .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%m/%d") as any));
 
     g.append("g")
-      .call(d3.axisLeft(y).tickFormat(d => `$${d}`));
+      .call(d3.axisLeft(y).tickFormat(d => `$${d}` as any));
 
   }, [data]);
 
