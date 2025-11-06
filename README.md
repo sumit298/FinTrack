@@ -34,7 +34,7 @@ cd frontend && npm install && npm run dev
 
 ## ✅ Requirements Met
 
-- ✅ **Authentication**: JWT-based login system
+- ✅ **Authentication**: JWT-based login system, refresh token system
 - ✅ **Dashboard**: Financial summary with D3.js charts
 - ✅ **Transactions**: CRUD operations with pagination & filtering
 - ✅ **Categories**: Income/expense categorization with colors
