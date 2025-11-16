@@ -255,7 +255,6 @@ export default function BudgetPage() {
     : selectedMonthTransactions.filter(t => t.categoryId._id === selectedCategoryId);
 
   
-    console.log("filteredTransactions", filteredTransactions);
   
   const totalBudget = filteredBudgets.reduce((sum, b) => sum + b.amount, 0);
   const totalSpent = filteredTransactions.reduce((sum, t) => sum + t.amount, 0);

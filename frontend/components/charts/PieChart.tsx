@@ -19,8 +19,6 @@ export default function PieChart({ data }: PieChartProps) {
   useEffect(() => {
     if (!data.length || !svgRef.current) return;
 
-    console.log('PieChart received data:', data);
-
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 

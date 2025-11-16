@@ -7,7 +7,7 @@ A full-stack budget tracking application with **Node.js/Express + Next.js/React*
 ### Docker (Recommended)
 ```bash
 # Start all services
-docker-compose --env-file .env.docker up --build
+docker compose -f docker-compose.yml up 
 
 # Access:
 # Frontend: http://localhost:3000

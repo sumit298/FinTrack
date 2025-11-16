@@ -188,35 +188,51 @@ export default function CategoriesPage() {
           </Dialog>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category) => (
-            <Card key={category._id}>
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div 
-                      className="w-4 h-4 rounded-full" 
-                      style={{ backgroundColor: category.color }}
-                    />
-                    {category.name}
-                  </div>
-                  <div className="flex gap-1">
-                    <Button variant="ghost" size="sm" onClick={() => handleEdit(category)}>
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                  category.type === 'income' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                }`}>
-                  {category.type}
-                </span>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {categories.length === 0 ? (
+          <Card className="text-center py-12">
+            <CardContent>
+              <Tag className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No Categories Found</h3>
+              <p className="text-muted-foreground mb-4">
+                Create your first category to start organizing your transactions
+              </p>
+              <Button onClick={() => setIsAddDialogOpen(true)} className="gap-2">
+                <Plus className="h-4 w-4" />
+                Create Category
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {categories.map((category) => (
+              <Card key={category._id}>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-4 h-4 rounded-full" 
+                        style={{ backgroundColor: category.color }}
+                      />
+                      {category.name}
+                    </div>
+                    <div className="flex gap-1">
+                      <Button variant="ghost" size="sm" onClick={() => handleEdit(category)}>
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                    category.type === 'income' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                  }`}>
+                    {category.type}
+                  </span>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </ProtectedRoute>
   );

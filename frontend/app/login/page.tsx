@@ -84,13 +84,14 @@ const Login = () => {
             });
 
             const data = await result.json();
+      
 
             if (data.success) {
                 toast.success("login successful");
                 login(data.token, data.user);
                 setTimeout(() => {
                     const savedToken = Cookies.get("token");
-                    console.log("Token after login:", savedToken);
+                    
                 }, 100);
                 router.push("/dashboard")
             }

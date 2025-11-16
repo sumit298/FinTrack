@@ -111,7 +111,6 @@ export default function DashboardPage() {
     try {
       const response = await apiCall(`${API_URL}/analytics/summary?month=${selectedMonth}&year=${selectedYear}`);
       const data = await response.json();
-      console.log("Analytics response:", data);
       if (data.success) {
         setAnalyticsSummary(data.data);
       }
@@ -134,12 +133,7 @@ export default function DashboardPage() {
            transactionDate.getFullYear() === selectedYear;
   });
   
-  console.log('Dashboard data:', { 
-    totalTransactions: transactions.length, 
-    selectedMonthTransactions: selectedMonthTransactions.length,
-    selectedMonth,
-    selectedYear
-  });
+  
 
   const totalIncome = selectedMonthTransactions
     .filter(t => t.type === 'income')
@@ -292,8 +286,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               {(() => {
-                console.log('Budget comparison data:', budgetComparison);
-                console.log('Categories for budget chart:', categories);
+              
                 
                 return budgetComparison.length > 0 ? (
                   <BudgetChart 
@@ -333,7 +326,7 @@ export default function DashboardPage() {
                   color: colors[index % colors.length]
                 }));
                 
-                console.log('Pie chart data:', pieData);
+        
                 
                 return pieData.length > 0 ? (
                   <PieChart data={pieData} />

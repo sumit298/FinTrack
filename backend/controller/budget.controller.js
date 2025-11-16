@@ -202,7 +202,6 @@ const BudgetController = {
         },
       }).populate('categoryId');
       
-      console.log('Budget comparison transactions found:', transactionsInRange.length);
       
       // Calculate spent amounts by category
       const spentByCategory = {};
@@ -213,8 +212,6 @@ const BudgetController = {
           spentByCategory[categoryId] = (spentByCategory[categoryId] || 0) + t.amount;
         });
       
-      console.log('Spent by category:', spentByCategory);
-
       const results = budgets.map((budget) => {
         const spent = spentByCategory[budget.categoryId._id.toString()] || 0;
         const difference = budget.amount - spent;

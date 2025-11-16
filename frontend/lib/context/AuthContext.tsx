@@ -64,7 +64,6 @@ export const AuthProvider = ({ children }: any) => {
 
     useEffect(() => {
         const token = Cookies.get("token");
-        console.log("token", token);
         if (token) {
             verifyToken(token);
         } else {
