@@ -163,9 +163,10 @@ export default function TransactionsPage() {
     };
 
     const resetForm = () => {
+        const firstExpenseCategory = categories.find(cat => cat.type === 'expense');
         setFormData({
             type: 'expense',
-            categoryId: '',
+            categoryId: firstExpenseCategory?._id || '',
             amount: '',
             date: new Date().toISOString().split('T')[0],
             description: ''
@@ -214,7 +215,7 @@ export default function TransactionsPage() {
 
                     <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                         <DialogTrigger asChild>
-                            <Button onClick={resetForm} className="gap-2">
+                            <Button onClick={resetForm} className="gap-2 cursor-pointer">
                                 <Plus className="h-4 w-4" />
                                 Add Transaction
                             </Button>
@@ -232,7 +233,10 @@ export default function TransactionsPage() {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="type">Type</Label>
-                                        <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
+                                        <Select value={formData.type} onValueChange={(value) => {
+                                            const firstCategory = categories.find(cat => cat.type === value);
+                                            setFormData({ ...formData, type: value, categoryId: firstCategory?._id || '' });
+                                        }}>
                                             <SelectTrigger>
                                                 <SelectValue />
                                             </SelectTrigger>
@@ -246,7 +250,7 @@ export default function TransactionsPage() {
                                         <Label htmlFor="category">Category</Label>
                                         <Select value={formData.categoryId} onValueChange={(value) => setFormData({ ...formData, categoryId: value })}>
                                             <SelectTrigger>
-                                                <SelectValue />
+                                                <SelectValue placeholder={categories.filter(cat => cat.type === formData.type).length === 0 ? "No categories available" : "Select category"} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {categories
@@ -300,7 +304,7 @@ export default function TransactionsPage() {
                                     }}>
                                         Cancel
                                     </Button>
-                                    <Button type="submit">
+                                    <Button type="submit" className="cursor-pointer">
                                         {editingTransaction ? 'Update' : 'Add'} Transaction
                                     </Button>
                                 </div>

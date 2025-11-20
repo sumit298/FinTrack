@@ -10,7 +10,6 @@ import { useAuth } from '@/lib/context/AuthContext';
 import { API_URL } from '@/lib/config';
 import BudgetChart from '@/components/charts/BudgetChart';
 import PieChart from '@/components/charts/PieChart';
-import LineChart from '@/components/charts/LineChart';
 
 interface Transaction {
   _id: string;
@@ -313,14 +312,10 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               {(() => {
-                const expenseTransactions = selectedMonthTransactions.filter(t => t.categoryId.type === 'expense');
-                
-                // If only one category, show individual transactions
-                const uniqueCategories = [...new Set(expenseTransactions.map(t => t.categoryId._id))];
                 
                 // Always show individual transactions with different colors for better visualization
                 const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
-                const pieData = expenseTransactions.map((t, index) => ({
+                const pieData = selectedMonthTransactions.map((t, index) => ({
                   name: t.categoryId.name,
                   value: t.amount,
                   color: colors[index % colors.length]

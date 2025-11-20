@@ -130,7 +130,7 @@ export default function CategoriesPage() {
           
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
-              <Button onClick={resetForm} className="gap-2">
+              <Button onClick={resetForm} className="gap-2 cursor-pointer">
                 <Plus className="h-4 w-4" />
                 Add Category
               </Button>
@@ -163,14 +163,6 @@ export default function CategoriesPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
-                  <Label>Color</Label>
-                  <Input
-                    type="color"
-                    value={formData.color}
-                    onChange={(e) => setFormData({...formData, color: e.target.value})}
-                  />
-                </div>
                 <div className="flex gap-2 justify-end">
                   <Button type="button" variant="outline" onClick={() => {
                     setIsAddDialogOpen(false);
@@ -179,7 +171,7 @@ export default function CategoriesPage() {
                   }}>
                     Cancel
                   </Button>
-                  <Button type="submit">
+                  <Button type="submit" className="cursor-pointer">
                     {editingCategory ? 'Update' : 'Add'} Category
                   </Button>
                 </div>

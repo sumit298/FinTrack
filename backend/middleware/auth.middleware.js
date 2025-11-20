@@ -70,7 +70,7 @@ function createToken(user) {
   };
 
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: "15m", 
+    expiresIn: "7h", 
   });
 
   return token;

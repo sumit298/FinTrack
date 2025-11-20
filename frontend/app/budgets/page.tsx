@@ -254,16 +254,19 @@ export default function BudgetPage() {
     ? selectedMonthTransactions
     : selectedMonthTransactions.filter(t => t.categoryId._id === selectedCategoryId);
 
-  
+  // Get category IDs that have budgets
+  const budgetedCategoryIds = filteredBudgets.map(b => b.categoryId._id);
   
   const totalBudget = filteredBudgets.reduce((sum, b) => sum + b.amount, 0);
-  const totalSpent = filteredTransactions.reduce((sum, t) => sum + t.amount, 0);
+  const totalSpent = filteredTransactions
+    .filter(t => budgetedCategoryIds.includes(t.categoryId._id))
+    .reduce((sum, t) => sum + t.amount, 0);
   const budgetUsedPercent = totalBudget > 0 ? Math.min((totalSpent / totalBudget) * 100, 100) : 0;
   const isOverBudget = totalSpent > totalBudget;
 
   // Category breakdown
   const categoryData = filteredBudgets.map(budget => {
-    const spent = selectedMonthTransactions
+    const spent = filteredTransactions
       .filter(t => t.categoryId._id === budget.categoryId?._id)
       .reduce((sum, t) => sum + t.amount, 0);
     
@@ -303,7 +306,7 @@ export default function BudgetPage() {
           
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
-              <Button onClick={resetForm} className="gap-2">
+              <Button onClick={resetForm} className="gap-2 cursor-pointer" >
                 <Plus className="h-4 w-4" />
                 Add Budget
               </Button>
@@ -384,7 +387,7 @@ export default function BudgetPage() {
                   }}>
                     Cancel
                   </Button>
-                  <Button type="submit">
+                  <Button type="submit" className='cursor-pointer'>
                     {editingBudget ? 'Update' : 'Add'} Budget
                   </Button>
                 </div>
