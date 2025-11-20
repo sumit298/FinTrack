@@ -3,7 +3,6 @@ const Transaction = require("../models/transaction.model");
 const AnalyticsController = {
   getSummary: async (req, res) => {
     try {
-      const userId = req.user.userId;
       const { month, year } = req.query;
       
       const currentDate = new Date();
@@ -12,23 +11,13 @@ const AnalyticsController = {
 
       const startOfMonth = new Date(selectedYear, selectedMonth - 1, 1);
       const endOfMonth = new Date(selectedYear, selectedMonth, 0);
-      
-      
-      // Check if there are any transactions at all for this user
-      const allTransactions = await Transaction.find({ userId: req.user.userId });
-      console.log('Total transactions for user:', allTransactions.length);
-      if (allTransactions.length > 0) {
-        console.log('Sample transaction:', allTransactions[0]);
-        console.log('Transaction dates:', allTransactions.map(t => ({ date: t.date, type: t.type })));
-      }
-      
+            
       // Check transactions in date range without type filter
       const transactionsInRange = await Transaction.find({
         userId: req.user.userId,
         date: { $gte: startOfMonth, $lte: endOfMonth }
-      }).populate('categoryId');
+      }).populate('categoryId', "name type color");
       
-
       // Calculate totals using the populated transactions
       const totalIncome = transactionsInRange
         .filter(t => t.categoryId?.type === 'income')
