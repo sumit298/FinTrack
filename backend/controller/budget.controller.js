@@ -56,9 +56,9 @@ const BudgetController = {
         });
       }
 
-      if (year < 2020 || year > 2100) {
+      if (year < 2024 || year > 2100) {
         return res.status(400).json({
-          message: "Year must be between 2020 and 2100",
+          message: "Year must be between 2024 and 2100",
           success: false,
         });
       }

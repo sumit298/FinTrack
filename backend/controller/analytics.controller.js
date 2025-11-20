@@ -13,7 +13,6 @@ const AnalyticsController = {
       const startOfMonth = new Date(selectedYear, selectedMonth - 1, 1);
       const endOfMonth = new Date(selectedYear, selectedMonth, 0);
       
-      console.log('Analytics query params:', { userId, selectedMonth, selectedYear, startOfMonth, endOfMonth });
       
       // Check if there are any transactions at all for this user
       const allTransactions = await Transaction.find({ userId: req.user.userId });
@@ -28,12 +27,7 @@ const AnalyticsController = {
         userId: req.user.userId,
         date: { $gte: startOfMonth, $lte: endOfMonth }
       }).populate('categoryId');
-      console.log('Transactions in date range:', transactionsInRange.length);
-      console.log('Transactions with categories:', transactionsInRange.map(t => ({
-        amount: t.amount,
-        categoryName: t.categoryId?.name,
-        categoryType: t.categoryId?.type
-      })));
+      
 
       // Calculate totals using the populated transactions
       const totalIncome = transactionsInRange
@@ -72,7 +66,7 @@ const AnalyticsController = {
         },
       ]);
       
-      console.log('Analytics results:', { totalIncome, totalExpenses, balance, categoryBreakdownCount: categoryBreakdown.length });
+  
       
       return res.json({
         success: true,

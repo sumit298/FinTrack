@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 import { useAuth } from "@/lib/context/AuthContext";
 import { API_URL } from "@/lib/config";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
 
 const Login = () => {
     const [loginData, setLoginData] = useState({
@@ -87,13 +86,15 @@ const Login = () => {
       
 
             if (data.success) {
-                toast.success("login successful");
+                toast.success("Login successful!", {
+                    duration: 2000,
+                });
                 login(data.token, data.user);
+                
+                // Delay navigation to show toast
                 setTimeout(() => {
-                    const savedToken = Cookies.get("token");
-                    
-                }, 100);
-                router.push("/dashboard")
+                    router.push("/dashboard");
+                }, 1500);
             }
             else {
                 toast.error(data.message || "Login failed");

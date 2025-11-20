@@ -43,7 +43,7 @@ const TransactionController = {
         .sort({ _id: -1 })
         .skip((page - 1) * perPage)
         .limit(perPage)
-        .populate("categoryId");
+        .populate("categoryId", "name type color");
 
       res.status(200).json({
         message: "Transactions fetched successfully",
@@ -67,7 +67,6 @@ const TransactionController = {
 
   createTransaction: async (req, res) => {
     try {
-      console.log(req.body)
       const { type, amount, categoryId, date, description } = req.body;
 
       if (!amount || !categoryId || !type) {

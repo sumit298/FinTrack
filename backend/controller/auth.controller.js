@@ -4,6 +4,7 @@ const {
   createToken,
   refreshToken,
 } = require("../middleware/auth.middleware");
+const jwt = require('jsonwebtoken');
 
 const AuthController = {
   register: async (req, res) => {
@@ -29,7 +30,6 @@ const AuthController = {
         });
       }
       const user = new User({ username, email, password });
-      // check if user already exists
 
       await user.save();
       const token = createToken(user);
@@ -91,11 +91,9 @@ const AuthController = {
   },
 
   verifyToken: async (req, res) => {
-    console.log("req.user", req.user);
     try {
       // If middleware passes, token is valid
       const user = await User.findById(req.userId).select("-password");
-      console.log("user", user);
 
       if (!user) {
         return res.status(401).json({
@@ -125,6 +123,25 @@ const AuthController = {
         return res.status(400).json({ message: "Token not provided" });
       }
 
+      // add a check to validate whether token is valid or not
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      
+      if (!decoded) {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid token",
+        });
+      }
+      const user = await User.findById(decoded.userId).select("-password");
+
+      if(!user){
+        return res.status(401).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+
+      
       const newToken = await refreshToken(token);
       return res.status(200).json({
         success: true,
